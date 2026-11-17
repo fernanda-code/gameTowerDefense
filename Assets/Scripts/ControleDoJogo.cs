@@ -1,8 +1,12 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// Controla a partida: tempo máximo, vitória, derrota
-// e mostra na tela a vida do castelo, a onda e o tempo.
+// Controla a partida na Fase1:
+// - conta o tempo máximo (se acabar, é derrota);
+// - mostra na tela a vida do castelo, a onda, os inimigos derrotados e o tempo;
+// - quando o jogo acaba, mostra a tela de fim com os botões.
+// Quem decide a vitória é o EnemySpawner e quem decide o Game Over é o BaseHealth
+// (scripts da Fernanda). Este script só pergunta para eles.
 public class ControleDoJogo : MonoBehaviour
 {
     public static ControleDoJogo instancia;
@@ -40,51 +44,43 @@ public class ControleDoJogo : MonoBehaviour
         if (acabou)
             return;
 
-        // Conta o tempo para trás
+        // Derrota: o castelo chegou a zero (o BaseHealth avisa pelo IsGameOver)
+        if (castelo != null && castelo.IsGameOver)
+        {
+            Terminar(false, "O castelo foi destruído!");
+            return;
+        }
+
+        // Vitória: o EnemySpawner diz que todas as ondas foram vencidas
+        if (spawner != null && spawner.Venceu())
+        {
+            Terminar(true, "Você defendeu o castelo!");
+            return;
+        }
+
+        // Tempo máximo da partida
         tempoRestante = tempoRestante - Time.deltaTime;
 
         if (tempoRestante <= 0)
         {
             tempoRestante = 0;
-            Derrota("O tempo acabou!");
-            return;
-        }
-
-        // Vitória: todas as ondas já saíram e não sobrou nenhum inimigo vivo
-        if (spawner != null && spawner.terminou)
-        {
-            if (GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
-            {
-                Vitoria();
-            }
+            Terminar(false, "O tempo acabou!");
         }
     }
 
-    // O castelo chama isto quando a vida dele chega a zero
-    public void Derrota(string motivo)
+    void Terminar(bool vitoria, string motivo)
     {
-        if (acabou)
-            return;
-
         acabou = true;
-        venceu = false;
+        venceu = vitoria;
         mensagem = motivo;
         Time.timeScale = 0f;   // pausa o jogo
-    }
-
-    void Vitoria()
-    {
-        acabou = true;
-        venceu = true;
-        mensagem = "Você defendeu o castelo!";
-        Time.timeScale = 0f;
     }
 
     void OnGUI()
     {
         // ----- Informações no topo da tela -----
         GUIStyle estilo = new GUIStyle(GUI.skin.label);
-        estilo.fontSize = 22;
+        estilo.fontSize = 20;
         estilo.fontStyle = FontStyle.Bold;
         estilo.normal.textColor = Color.white;
 
@@ -93,20 +89,27 @@ public class ControleDoJogo : MonoBehaviour
             vida = castelo.VidaAtual();
 
         string onda = "-";
+        int derrotados = 0;
         if (spawner != null)
-            onda = spawner.OndaAtual() + " / " + spawner.totalWaves;
+        {
+            onda = spawner.OndaAtual() + "/" + spawner.totalWaves;
+            derrotados = spawner.InimigosDerrotados();
+        }
 
         int segundos = Mathf.CeilToInt(tempoRestante);
         string tempo = (segundos / 60) + ":" + (segundos % 60).ToString("00");
 
-        GUI.Box(new Rect(250, 10, 200, 50), "");
-        GUI.Label(new Rect(262, 18, 190, 40), "Castelo: " + vida, estilo);
+        GUI.Box(new Rect(250, 10, 170, 50), "");
+        GUI.Label(new Rect(260, 20, 165, 40), "Castelo: " + vida, estilo);
 
-        GUI.Box(new Rect(460, 10, 160, 50), "");
-        GUI.Label(new Rect(472, 18, 150, 40), "Onda: " + onda, estilo);
+        GUI.Box(new Rect(430, 10, 120, 50), "");
+        GUI.Label(new Rect(440, 20, 115, 40), "Onda: " + onda, estilo);
 
-        GUI.Box(new Rect(630, 10, 150, 50), "");
-        GUI.Label(new Rect(642, 18, 140, 40), "Tempo: " + tempo, estilo);
+        GUI.Box(new Rect(560, 10, 170, 50), "");
+        GUI.Label(new Rect(570, 20, 165, 40), "Derrotados: " + derrotados, estilo);
+
+        GUI.Box(new Rect(740, 10, 150, 50), "");
+        GUI.Label(new Rect(750, 20, 145, 40), "Tempo: " + tempo, estilo);
 
         // ----- Tela de fim de jogo -----
         if (!acabou)

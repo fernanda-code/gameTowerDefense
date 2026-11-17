@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
@@ -10,13 +9,9 @@ public class EnemyHealth : MonoBehaviour
     public int moedasAoMorrer = 25;
 
     private float currentHealth;
-<<<<<<< HEAD
-    private bool morto = false;
-=======
     private bool isDead = false;
 
     public EnemySpawner spawner;
->>>>>>> origin/main
 
     void Start()
     {
@@ -40,23 +35,18 @@ public class EnemyHealth : MonoBehaviour
 
     void Die()
     {
-<<<<<<< HEAD
-        if (morto) return;   // evita morrer duas vezes no mesmo frame
-        morto = true;
-
-        Debug.Log("Inimigo derrotado!");
-        Loja.GanharMoedas(moedasAoMorrer);
-=======
         isDead = true;
 
         Debug.Log("Inimigo derrotado!");
+
+        // Dá moedas para o jogador comprar mais torres
+        Loja.GanharMoedas(moedasAoMorrer);
 
         if (spawner != null)
         {
             spawner.EnemyDefeated();
         }
 
->>>>>>> origin/main
         Destroy(gameObject);
     }
 }

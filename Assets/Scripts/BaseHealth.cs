@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using TMPro;
 
@@ -17,6 +16,12 @@ public class BaseHealth : MonoBehaviour
     public bool IsGameOver
     {
         get { return gameOver; }
+    }
+
+    // Usado pelo ControleDoJogo para mostrar a vida na tela da Fase1
+    public int VidaAtual()
+    {
+        return currentHealth;
     }
 
     void Start()
@@ -50,23 +55,12 @@ public class BaseHealth : MonoBehaviour
         }
     }
 
-    // Usado pelo ControleDoJogo para mostrar a vida na tela
-    public int VidaAtual()
-    {
-        return currentHealth;
-    }
-
     void GameOver()
     {
         gameOver = true;
 
         Debug.Log("GAME OVER! A base foi destruída.");
 
-<<<<<<< HEAD
-        if (ControleDoJogo.instancia != null)
-        {
-            ControleDoJogo.instancia.Derrota("O castelo foi destruído!");
-=======
         if (textoFimDeJogo != null)
         {
             textoFimDeJogo.text = "GAME OVER!";
@@ -81,7 +75,6 @@ public class BaseHealth : MonoBehaviour
         if (textoVidaBase != null)
         {
             textoVidaBase.text = "Vida da Base: " + currentHealth + "/" + maxHealth;
->>>>>>> origin/main
         }
     }
 }
