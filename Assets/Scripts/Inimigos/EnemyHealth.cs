@@ -7,6 +7,9 @@ public class EnemyHealth : MonoBehaviour
     public float maxHealth = 100f;
 
     private float currentHealth;
+    private bool isDead = false;
+
+    public EnemySpawner spawner;
 
     void Start()
     {
@@ -15,6 +18,9 @@ public class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(float dano)
     {
+        if (isDead)
+            return;
+
         currentHealth -= dano;
 
         Debug.Log("Vida do inimigo: " + currentHealth);
@@ -27,7 +33,15 @@ public class EnemyHealth : MonoBehaviour
 
     void Die()
     {
+        isDead = true;
+
         Debug.Log("Inimigo derrotado!");
+
+        if (spawner != null)
+        {
+            spawner.EnemyDefeated();
+        }
+
         Destroy(gameObject);
     }
 }
