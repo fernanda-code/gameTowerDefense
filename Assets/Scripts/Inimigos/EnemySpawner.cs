@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using System.Collections;
+using TMPro;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -9,6 +10,10 @@ public class EnemySpawner : MonoBehaviour
     public Transform spawnPoint;
     public Transform[] waypoints;
     public BaseHealth baseHealth;
+    [Header("Interface")]
+    public TMP_Text textoOnda;
+    public TMP_Text textoInimigosDerrotados;
+    public GameObject textoFimDeJogo;
 
     [Header("Configuração das Ondas")]
     public int enemiesPerWave = 5;
@@ -17,6 +22,10 @@ public class EnemySpawner : MonoBehaviour
     public float timeBetweenWaves = 5f;
 
     private int currentWave = 0;
+    private int defeatedEnemies = 0;
+    private int spawnedEnemies = 0;
+    private bool allWavesSpawned = false;
+    private bool victory = false;
 
     [HideInInspector]
     public bool terminou = false;   // vira true quando a última onda termina de sair
@@ -39,6 +48,10 @@ public class EnemySpawner : MonoBehaviour
             currentWave++;
 
             Debug.Log("Iniciando onda " + currentWave);
+            if (textoOnda != null)
+            {
+                textoOnda.text = "Onda: " + currentWave + "/" + totalWaves;
+            }
 
             for (int i = 0; i < enemiesPerWave; i++)
             {
@@ -48,12 +61,23 @@ public class EnemySpawner : MonoBehaviour
                     Quaternion.identity
                 );
 
+                spawnedEnemies++;
+
+                Debug.Log("Inimigos criados: " + spawnedEnemies);
+
                 EnemyMovement movement = enemy.GetComponent<EnemyMovement>();
 
                 if (movement != null)
                 {
                     movement.waypoints = waypoints;
                     movement.baseHealth = baseHealth;
+                }
+
+                EnemyHealth health = enemy.GetComponent<EnemyHealth>();
+
+                if (health != null)
+                {
+                    health.spawner = this;
                 }
 
                 yield return new WaitForSeconds(timeBetweenSpawns);
@@ -69,5 +93,46 @@ public class EnemySpawner : MonoBehaviour
 
         terminou = true;
         Debug.Log("Todas as ondas foram concluídas!");
+
+        allWavesSpawned = true;
+
+        CheckVictory();
     }
+    public void EnemyDefeated()
+    {
+        defeatedEnemies++;
+
+        Debug.Log("Inimigos derrotados: " + defeatedEnemies);
+
+        if (textoInimigosDerrotados != null)
+        {
+            textoInimigosDerrotados.text = "Inimigos derrotados: " + defeatedEnemies;
+        }
+
+        CheckVictory();
+    }
+    void CheckVictory()
+    {
+        if (victory || !allWavesSpawned)
+            return;
+
+        if (baseHealth == null || baseHealth.IsGameOver)
+            return;
+
+        if (defeatedEnemies == spawnedEnemies && spawnedEnemies > 0)
+        {
+            victory = true;
+
+            Debug.Log("VITÓRIA! Todos os inimigos foram derrotados!");
+
+            if (textoFimDeJogo != null)
+            {
+                textoFimDeJogo.SetActive(true);
+            }
+
+            Time.timeScale = 0f;
+        }
+    }
+
 }
+
