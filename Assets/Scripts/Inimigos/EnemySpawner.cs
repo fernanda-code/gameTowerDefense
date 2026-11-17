@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using System.Collections;
 using TMPro;
@@ -23,9 +22,15 @@ public class EnemySpawner : MonoBehaviour
 
     private int currentWave = 0;
     private int defeatedEnemies = 0;
+    private int reachedBaseEnemies = 0;   // inimigos que chegaram no castelo
     private int spawnedEnemies = 0;
     private bool allWavesSpawned = false;
     private bool victory = false;
+
+    // Usados pelo ControleDoJogo para mostrar as informações na tela da Fase1
+    public int OndaAtual() { return currentWave; }
+    public int InimigosDerrotados() { return defeatedEnemies; }
+    public bool Venceu() { return victory; }
 
     void Start()
     {
@@ -101,6 +106,14 @@ public class EnemySpawner : MonoBehaviour
 
         CheckVictory();
     }
+
+    // Chamado pelo EnemyMovement quando um inimigo chega no castelo
+    public void EnemyReachedBase()
+    {
+        reachedBaseEnemies++;
+        CheckVictory();
+    }
+
     void CheckVictory()
     {
         if (victory || !allWavesSpawned)
@@ -109,7 +122,9 @@ public class EnemySpawner : MonoBehaviour
         if (baseHealth == null || baseHealth.IsGameOver)
             return;
 
-        if (defeatedEnemies == spawnedEnemies && spawnedEnemies > 0)
+        // Vitória: todos os inimigos criados já saíram do jogo
+        // (derrotados ou chegaram no castelo) e o castelo continua de pé
+        if (defeatedEnemies + reachedBaseEnemies == spawnedEnemies && spawnedEnemies > 0)
         {
             victory = true;
 
@@ -125,4 +140,3 @@ public class EnemySpawner : MonoBehaviour
     }
 
 }
-

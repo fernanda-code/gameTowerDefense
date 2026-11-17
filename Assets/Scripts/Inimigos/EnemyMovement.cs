@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
@@ -40,6 +39,13 @@ public class EnemyMovement : MonoBehaviour
                 if (baseHealth != null)
                 {
                     baseHealth.TakeDamage(damageToBase);
+                }
+
+                // Avisa o spawner que este inimigo saiu do jogo (chegou na base)
+                EnemyHealth health = GetComponent<EnemyHealth>();
+                if (health != null && health.spawner != null)
+                {
+                    health.spawner.EnemyReachedBase();
                 }
 
                 Destroy(gameObject);

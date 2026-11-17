@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using TMPro;
 
@@ -17,6 +16,12 @@ public class BaseHealth : MonoBehaviour
     public bool IsGameOver
     {
         get { return gameOver; }
+    }
+
+    // Usado pelo ControleDoJogo para mostrar a vida na tela da Fase1
+    public int VidaAtual()
+    {
+        return currentHealth;
     }
 
     void Start()
