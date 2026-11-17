@@ -35,9 +35,20 @@ public class BaseHealth : MonoBehaviour
         }
     }
 
+    // Usado pelo ControleDoJogo para mostrar a vida na tela
+    public int VidaAtual()
+    {
+        return currentHealth;
+    }
+
     void GameOver()
     {
         gameOver = true;
         Debug.Log("GAME OVER! A base foi destruída.");
+
+        if (ControleDoJogo.instancia != null)
+        {
+            ControleDoJogo.instancia.Derrota("O castelo foi destruído!");
+        }
     }
 }

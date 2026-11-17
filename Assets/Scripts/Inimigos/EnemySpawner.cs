@@ -18,6 +18,15 @@ public class EnemySpawner : MonoBehaviour
 
     private int currentWave = 0;
 
+    [HideInInspector]
+    public bool terminou = false;   // vira true quando a última onda termina de sair
+
+    // Usado pelo ControleDoJogo para mostrar a onda na tela
+    public int OndaAtual()
+    {
+        return currentWave;
+    }
+
     void Start()
     {
         StartCoroutine(SpawnWaves());
@@ -58,6 +67,7 @@ public class EnemySpawner : MonoBehaviour
             }
         }
 
+        terminou = true;
         Debug.Log("Todas as ondas foram concluídas!");
     }
 }

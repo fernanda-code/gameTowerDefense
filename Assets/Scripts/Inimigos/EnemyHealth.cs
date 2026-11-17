@@ -6,7 +6,11 @@ public class EnemyHealth : MonoBehaviour
     [Header("Vida do Inimigo")]
     public float maxHealth = 100f;
 
+    [Header("Recompensa")]
+    public int moedasAoMorrer = 25;
+
     private float currentHealth;
+    private bool morto = false;
 
     void Start()
     {
@@ -27,7 +31,11 @@ public class EnemyHealth : MonoBehaviour
 
     void Die()
     {
+        if (morto) return;   // evita morrer duas vezes no mesmo frame
+        morto = true;
+
         Debug.Log("Inimigo derrotado!");
+        Loja.GanharMoedas(moedasAoMorrer);
         Destroy(gameObject);
     }
 }

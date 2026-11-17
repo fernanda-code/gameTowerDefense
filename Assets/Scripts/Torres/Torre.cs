@@ -1,12 +1,12 @@
 using UnityEngine;
 
-// Script da torre (serve para o arqueiro e para o canhão).
+// Script da torre (serve para o arqueiro, o canhão e o míssil).
 // A diferença entre elas são os valores que colocamos no Inspector.
 public class Torre : MonoBehaviour
 {
     public float alcance = 5f;           // até onde a torre enxerga
     public float tempoEntreTiros = 1f;   // segundos entre um tiro e outro
-    public GameObject projetil;          // prefab da flecha ou da bala
+    public GameObject projetil;          // prefab da flecha, da bala ou do míssil
 
     private float contador = 0f;
 
@@ -15,6 +15,11 @@ public class Torre : MonoBehaviour
         contador = contador + Time.deltaTime;
 
         GameObject alvo = ProcurarInimigo();
+
+        if (alvo != null)
+        {
+            VirarPara(alvo);
+        }
 
         if (alvo != null && contador >= tempoEntreTiros)
         {
@@ -42,6 +47,15 @@ public class Torre : MonoBehaviour
         }
 
         return maisPerto;
+    }
+
+    // Gira a torre para apontar para o inimigo.
+    // O desenho da torre aponta para cima, por isso o "- 90".
+    void VirarPara(GameObject alvo)
+    {
+        Vector2 direcao = alvo.transform.position - transform.position;
+        float angulo = Mathf.Atan2(direcao.y, direcao.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angulo - 90);
     }
 
     void Atirar(GameObject alvo)
