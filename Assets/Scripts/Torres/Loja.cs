@@ -56,15 +56,6 @@ public class Loja : MonoBehaviour
         GUI.Box(new Rect(10, 10, 230, 50), "");
         GUI.Label(new Rect(22, 16, 220, 40), "Moedas: " + moedas, estiloMoedas);
 
-        // ----- Dica embaixo -----
-        GUIStyle estiloDica = new GUIStyle(GUI.skin.label);
-        estiloDica.fontSize = 20;
-        estiloDica.fontStyle = FontStyle.Bold;
-        estiloDica.normal.textColor = Color.white;
-
-        GUI.Box(new Rect(10, Screen.height - 50, 520, 40), "");
-        GUI.Label(new Rect(20, Screen.height - 46, 520, 35), "Clique numa base de pedra para construir uma torre", estiloDica);
-
         // ----- Aviso (ex.: moedas insuficientes) -----
         if (tempoAviso > 0)
         {

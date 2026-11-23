@@ -1,12 +1,20 @@
+
 using UnityEngine;
 
 // Script da torre (serve para o arqueiro, o canhão e o míssil).
 // A diferença entre elas são os valores que colocamos no Inspector.
 public class Torre : MonoBehaviour
 {
+    [Header("Configurações da Torre")]
     public float alcance = 5f;           // até onde a torre enxerga
     public float tempoEntreTiros = 1f;   // segundos entre um tiro e outro
     public GameObject projetil;          // prefab da flecha, da bala ou do míssil
+
+    [Header("Áudio")]
+    public AudioClip somDisparo;
+
+    [Range(0f, 1f)]
+    public float volumeDisparo = 0.5f;
 
     private float contador = 0f;
 
@@ -37,7 +45,10 @@ public class Torre : MonoBehaviour
 
         foreach (GameObject inimigo in inimigos)
         {
-            float distancia = Vector2.Distance(transform.position, inimigo.transform.position);
+            float distancia = Vector2.Distance(
+                transform.position,
+                inimigo.transform.position
+            );
 
             if (distancia <= menorDistancia)
             {
@@ -54,14 +65,35 @@ public class Torre : MonoBehaviour
     void VirarPara(GameObject alvo)
     {
         Vector2 direcao = alvo.transform.position - transform.position;
-        float angulo = Mathf.Atan2(direcao.y, direcao.x) * Mathf.Rad2Deg;
+
+        float angulo = Mathf.Atan2(
+            direcao.y,
+            direcao.x
+        ) * Mathf.Rad2Deg;
+
         transform.rotation = Quaternion.Euler(0, 0, angulo - 90);
     }
 
+    // Cria o projétil e reproduz o som do disparo
     void Atirar(GameObject alvo)
     {
-        GameObject novoProjetil = Instantiate(projetil, transform.position, Quaternion.identity);
+        GameObject novoProjetil = Instantiate(
+            projetil,
+            transform.position,
+            Quaternion.identity
+        );
+
         novoProjetil.GetComponent<Projetil>().alvo = alvo;
+
+        // Reproduz o som configurado para esta torre
+        if (somDisparo != null)
+        {
+            AudioSource.PlayClipAtPoint(
+                somDisparo,
+                transform.position,
+                volumeDisparo
+            );
+        }
     }
 
     // Mostra o alcance da torre na aba Scene (círculo azul)

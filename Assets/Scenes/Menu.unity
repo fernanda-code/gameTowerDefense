@@ -300,7 +300,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94f0a3af24b444e4a480708da1c71903, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuPrincipal
-  cenaDoJogo: Fase1
+  cenaDoJogo: Fase1_Medieval
+  fundoMenu: {fileID: 2800000, guid: ddddb9cc33f62de47b30de14aaafdb7d, type: 3}
+  placaFrase: {fileID: -1378918061, guid: ca55962a728a7c54ba14c834c327b257, type: 3}
+  madeiraBotao: {fileID: -6307533611898947747, guid: ca55962a728a7c54ba14c834c327b257, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
